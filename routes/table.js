@@ -24,7 +24,7 @@ router.put('/updateMessage/:id', async (req, res) => {
 });
 
 router.post('/resendMessage', async (req, res) => {
-  const id = req.body.email_id;
+  const id = req.body.id;
 
   try {
     const message = await getMessage(id);

@@ -22,12 +22,11 @@ const getMessage = async (messageID) => {
   const params = {
     TableName: process.env.TABLE_NAME,
     Key: {
-      email_id: { S: messageID },
+      id: { S: messageID },
     }
   };
   try {
     const data = await ddbClient.send(new GetItemCommand(params))
-    console.log(unmarshall(data.Item));
     return unmarshall(data.Item);
   } catch (err) {
     console.log("Error", err);
@@ -38,8 +37,9 @@ const updateMessage = async (messageID, updatedMessage) => {
   const params = {
     TableName: process.env.TABLE_NAME,
     Item: {
-      email_id: { S: messageID },
-      name: { S: updatedMessage.name }
+      id: { S: messageID },
+      Message: { S: updatedMessage.Message },
+      Attributes: { S: JSON.stringify(updatedMessage.Attributes) }
     }
   };
 
@@ -53,10 +53,22 @@ const updateMessage = async (messageID, updatedMessage) => {
   }
 }
 
+const convertMessageAtts = (attributes) => {
+  const result = {};
+  for (const key in attributes) {
+    result[key] = {
+      "DataType": `${attributes[key]["Type"]}`,
+      "StringValue": `${attributes[key]["Value"]}`
+    }
+  }
+
+  return result;
+}
+
 const resendMessage = async (message) => {
   const params = {
-    // Can add MessageAttributes here
-    MessageBody: JSON.stringify(message),
+    MessageAttributes: convertMessageAtts(JSON.parse(message.Attributes)),
+    MessageBody: JSON.stringify(message.Message),
     QueueUrl: process.env.QUEUE_URL || 'MainQueue'
   }
 
@@ -73,7 +85,7 @@ const deleteMessage = async (messageID) => {
   const params = {
     TableName: process.env.TABLE_NAME,
     Key: {
-      email_id: { S: messageID },
+      id: { S: messageID },
     },
   };
 
