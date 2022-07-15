@@ -68,7 +68,7 @@ const convertMessageAtts = (attributes) => {
 const resendMessage = async (message) => {
   const params = {
     MessageAttributes: convertMessageAtts(JSON.parse(message.Attributes)),
-    MessageBody: JSON.stringify(message.Message),
+    MessageBody: message.Message,
     QueueUrl: process.env.QUEUE_URL || 'MainQueue'
   }
 

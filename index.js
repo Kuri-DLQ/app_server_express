@@ -1,8 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const PORT = 3000;
+const PORT = 5001;
 const tableRoutes = require('./routes/table.js')
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
