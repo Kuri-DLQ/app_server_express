@@ -14,7 +14,7 @@ router.get('/allMessages', async (req, res) => {
 router.put('/updateMessage/:id', async (req, res) => {
   const id = req.params.id;
   const message = req.body;
-  
+
   try {
     const updated = await updateMessage(id, message);
     res.json(updated);
@@ -37,15 +37,40 @@ router.post('/resendMessage', async (req, res) => {
   }
 });
 
+router.post('/resendAllMessages', async (req, res) => {
+  try {
+    const messages = await getAllMessages();
+    for (let idx = 0; idx < messages.length; idx++) {
+      await resendMessage(messages[idx]);
+      await deleteMessage(messages[idx].id);
+    }
+    res.json({ "success": "messages resent" });
+  } catch (err) {
+    res.send({ "error": "failed to resend messages" })
+  }
+})
+
 router.delete('/deleteMessage/:id', async (req, res) => {
   const id = req.params.id;
-  
+
   try {
     await deleteMessage(id);
-    res.json({ "sucess": "message deleted" });
+    res.json({ "success": "message deleted" });
   } catch (err) {
     res.send({ "error": "failed to delete message" });
   }
 });
+
+router.delete('/deleteAllMessages', async (req, res) => {
+  try {
+    const messages = await getAllMessages();
+    for (let idx = 0; idx < messages.length; idx++) {
+      await deleteMessage(messages[idx].id)
+    }
+    res.json({ "success": "messages deleted" });
+  } catch (err) {
+    res.send({ "error": "failed to delete messages" })
+  }
+})
 
 module.exports = router;
