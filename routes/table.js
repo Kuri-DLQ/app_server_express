@@ -37,6 +37,19 @@ router.post('/resendMessage', async (req, res) => {
   }
 });
 
+router.post('/resendAllMessages', async (req, res) => {
+  try {
+    const messages = await getAllMessages();
+    for (let idx = 0; idx < messages.length; idx++) {
+      await resendMessage(messages[idx]);
+      await deleteMessage(messages[idx].id);
+    }
+    res.json({ "success": "messages resent" });
+  } catch (err) {
+    res.send({ "error": "failed to resend messages" })
+  }
+})
+
 router.delete('/deleteMessage/:id', async (req, res) => {
   const id = req.params.id;
 
