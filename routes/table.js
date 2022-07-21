@@ -20,10 +20,10 @@ router.get('/sse', async (req, res) => {
 
   try {
     res.writeHead(200, headers);
-    const count = await getMessageCount();
-    setInterval(() => {
-
-      res.write(`data: count is ${count}`);
+    let count = await getMessageCount();
+    setInterval(async() => {
+      count = await getMessageCount();
+      res.write(`data: ${count}`);
       res.write('\n\n');
     }, 5000);
     // client.stream = res; // store response obj to be written to later
