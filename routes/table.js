@@ -24,6 +24,8 @@ router.get('/sse', async (req, res) => {
     setInterval(async() => {
       count = await getMessageCount();
       res.write(`data: ${count}`);
+      // let messages = await getAllMessages();
+      // res.write(`data: ${messages}`);
       res.write('\n\n');
     }, 5000);
     // client.stream = res; // store response obj to be written to later
