@@ -20,14 +20,15 @@ router.get('/sse', async (req, res) => {
 
   try {
     res.writeHead(200, headers);
-    let count = await getMessageCount();
+    // let count = await getMessageCount();
     setInterval(async() => {
-      count = await getMessageCount();
-      res.write(`data: ${count}`);
-      // let messages = await getAllMessages();
-      // res.write(`data: ${messages}`);
+      // count = await getMessageCount();
+      // res.write(`data: ${count}`);
+      let messages = await getAllMessages();
+      let stringifiedMessages = JSON.stringify(messages);
+      res.write(`data: ${stringifiedMessages}`);
       res.write('\n\n');
-    }, 5000);
+    }, 10000);
     // client.stream = res; // store response obj to be written to later
   } catch (err) {
     res.json({ "error": "error getting count of messages" });
