@@ -16,5 +16,9 @@ app.get('/', async (req, res) => {
   res.send('Homepage');
 })
 
+app.get('/killServer', async (req, res) => {
+  process.exit();
+})
 
-app.listen(PORT, () => `App listening on port ${PORT}...`);
+
+const server = app.listen(PORT, () => console.log(`App listening on port ${PORT}...`));
