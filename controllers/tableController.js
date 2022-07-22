@@ -9,7 +9,7 @@ const getAllMessages = async () => {
   const params = {
     TableName: process.env.TABLE_NAME,
   };
-  
+
   try {
     const data = await ddbClient.send(new ScanCommand(params));
     return data.Items.map(message => unmarshall(message));

@@ -11,6 +11,27 @@ router.get('/allMessages', async (req, res) => {
   }
 });
 
+router.get('/sse', async (req, res) => {
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    Connection: 'keep-alive',
+    'Cache-Control': 'no-cache',
+  };
+
+  try {
+    res.writeHead(200, headers);
+    setInterval(async() => {
+      let messages = await getAllMessages();
+      let stringifiedMessages = JSON.stringify(messages);
+      res.write(`data: ${stringifiedMessages}`);
+      res.write('\n\n');
+    }, 10000);
+  } catch (err) {
+    res.json({ "error": "error getting count of messages" });
+  }
+
+});
+
 router.put('/updateMessage/:id', async (req, res) => {
   const id = req.params.id;
   const message = req.body;
