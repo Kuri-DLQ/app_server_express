@@ -18,21 +18,6 @@ const getAllMessages = async () => {
   }
 }
 
-const getMessageCount = async () => {
-  const params = {
-    TableName: process.env.TABLE_NAME,
-  };
-
-  try {
-    const data = await ddbClient.send(new ScanCommand(params));
-    const count = data.Items.length;
-    console.log("Success, the number of messages is: ", count);
-    return count;
-  } catch (err) {
-    console.log("Error", err);
-  }
-}
-
 const getMessage = async (messageID) => {
   const params = {
     TableName: process.env.TABLE_NAME,
@@ -112,5 +97,5 @@ const deleteMessage = async (messageID) => {
   }
 }
 
-module.exports = { getAllMessages, updateMessage, resendMessage, getMessage, deleteMessage, getMessageCount };
+module.exports = { getAllMessages, updateMessage, resendMessage, getMessage, deleteMessage };
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllMessages, updateMessage, getMessage, resendMessage, deleteMessage, getMessageCount } = require("../controllers/tableController.js");
+const { getAllMessages, updateMessage, getMessage, resendMessage, deleteMessage } = require("../controllers/tableController.js");
 
 router.get('/allMessages', async (req, res) => {
   try {
@@ -20,16 +20,12 @@ router.get('/sse', async (req, res) => {
 
   try {
     res.writeHead(200, headers);
-    // let count = await getMessageCount();
     setInterval(async() => {
-      // count = await getMessageCount();
-      // res.write(`data: ${count}`);
       let messages = await getAllMessages();
       let stringifiedMessages = JSON.stringify(messages);
       res.write(`data: ${stringifiedMessages}`);
       res.write('\n\n');
     }, 10000);
-    // client.stream = res; // store response obj to be written to later
   } catch (err) {
     res.json({ "error": "error getting count of messages" });
   }
