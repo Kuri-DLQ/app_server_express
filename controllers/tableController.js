@@ -39,7 +39,8 @@ const updateMessage = async (messageID, updatedMessage) => {
     Item: {
       id: { S: messageID },
       Message: { S: updatedMessage.Message },
-      Attributes: { S: JSON.stringify(updatedMessage.Attributes) }
+      Attributes: { S: JSON.stringify(updatedMessage.Attributes) },
+      Timestamp: { S: updatedMessage.Timestamp }
     }
   };
 
