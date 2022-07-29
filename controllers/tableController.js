@@ -45,8 +45,7 @@ const updateMessage = async (messageID, updatedMessage) => {
   };
 
   try {
-    const data = await ddbClient.send(new PutItemCommand(params));
-    console.log("Success, message updated", data);
+    await ddbClient.send(new PutItemCommand(params));
     const newMessage = await getMessage(messageID);
     return newMessage;
   } catch (err) {
@@ -75,7 +74,6 @@ const resendMessage = async (message) => {
 
   try {
     const data = await sqsClient.send(new SendMessageCommand(params));
-    console.log("Success, message sent:", data);
     return data;
   } catch (err) {
     console.log("Error", err);
@@ -92,7 +90,7 @@ const deleteMessage = async (messageID) => {
 
   try {
     const data = await ddbClient.send(new DeleteItemCommand(params));
-    console.log("Success, message deleted", data);
+    // console.log("Success, message deleted", data);
   } catch (err) {
     console.log("Error", err);
   }
