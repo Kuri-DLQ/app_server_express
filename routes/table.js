@@ -25,32 +25,6 @@ const useServerSentEventsMiddleware = (req, res, next) => {
   next();
 }
 
-const streamRandomNumbers = (req, res) => {
-  // We are sending anyone who connects to /stream-random-numbers
-  // a random number that's encapsulated in an object
-  let interval = setInterval(function generateAndSendRandomNumber(){
-      const data = {
-          value: Math.random(),
-      };
-
-      res.sendEventStreamData(data);
-  }, 3000);
-
-  // close
-  res.on('close', () => {
-      clearInterval(interval);
-      res.end();
-  });
-}
-
-router.get('/sse', useServerSentEventsMiddleware, streamRandomNumbers)
-
-
-
-// const { serverSentMiddleware } = require("../middleware/serverSentMiddleware.js")
-
-
-
 // const streamRandomNumbers = (req, res) => {
 //   // We are sending anyone who connects to /stream-random-numbers
 //   // a random number that's encapsulated in an object
@@ -58,10 +32,8 @@ router.get('/sse', useServerSentEventsMiddleware, streamRandomNumbers)
 //       const data = {
 //           value: Math.random(),
 //       };
-
 //       res.sendEventStreamData(data);
 //   }, 3000);
-
 //   // close
 //   res.on('close', () => {
 //       clearInterval(interval);
@@ -69,42 +41,22 @@ router.get('/sse', useServerSentEventsMiddleware, streamRandomNumbers)
 //   });
 // }
 
-// const serverSentMiddleware = (req, res, next) => {
-//   const headers = {
-//     'Content-Type': 'text/event-stream',
-//     'Connection': 'keep-alive',
-//     'Cache-Control': 'no-cache',
-//   };
+const streamMessages = async (req, res) => {
+    try {
+      setInterval(async() => {
+        let messages = await getAllMessages();
+        res.sendEventStreamData(messages);
+          // close
+        res.on('close', () => {
+          res.end();
+        });
+      }, 3000);
+    } catch (err) {
+      res.json({ "error": "error getting messages" });
+    }
+}
 
-//   // if (!res.headersSent) {
-//     res.writeHead(200, headers);
-//   // }
-
-//   // res.setHeader('Content-Type', 'text/event-stream');
-//   // res.setHeader('Cache-Control', 'no-cache');
-
-//   // // only if you want anyone to access this endpoint
-//   // res.setHeader('Access-Control-Allow-Origin', '*');
-
-//   // res.flushHeaders();
-
-//   const sendEventStreamData = (data) => {
-//       const sseFormattedResponse = `data: ${JSON.stringify(data)}\n\n`;
-//       res.write(sseFormattedResponse);
-//   }
-
-//   // we are attaching sendEventStreamData to res, so we can use it later
-//   Object.assign(res, {
-//       sendEventStreamData
-//   });
-
-//   next();
-// }
-
-// router.use(serverSentMiddleware());
-
-// router.get('/sse', serverSentMiddleware, streamRandomNumbers);
-
+router.get('/sse', useServerSentEventsMiddleware, streamMessages)
 
   // router.get('/sse', async (req, res) => {
   //   const headers = {
