@@ -4,10 +4,10 @@ const { sqsClient } = require("../clients/sqsClient.js");
 const { unmarshall } = require("@aws-sdk/util-dynamodb");
 const { SendMessageCommand } = require("@aws-sdk/client-sqs");
 require('dotenv').config();
-
+const tableName = 'Kuri-DLQ-table'
 const getAllMessages = async () => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: tableName,
   };
 
   try {
@@ -20,7 +20,7 @@ const getAllMessages = async () => {
 
 const getMessage = async (messageID) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: tableName,
     Key: {
       id: { S: messageID },
     }
@@ -35,7 +35,7 @@ const getMessage = async (messageID) => {
 
 const updateMessage = async (messageID, updatedMessage) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: tableName,
     Item: {
       id: { S: messageID },
       Message: { S: updatedMessage.Message },
@@ -82,7 +82,7 @@ const resendMessage = async (message) => {
 
 const deleteMessage = async (messageID) => {
   const params = {
-    TableName: process.env.TABLE_NAME,
+    TableName: tableName,
     Key: {
       id: { S: messageID },
     },
